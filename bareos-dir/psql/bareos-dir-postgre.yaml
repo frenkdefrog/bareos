@@ -1,0 +1,43 @@
+# BareOS Director with MariaDB
+
+version: '2'
+
+services:
+  bareos-dir:
+    image: ubuntu:20.04 
+    hostname: bareos-dir
+    ports:
+      - 9101:9101
+    command: [ "/usr/bin/sleep", "36000"]
+    environment:
+      DBDRIVER: postgresql 
+      PGHOST: bareos-db
+      PGDATABASE: bareos
+      PGUSER: bareos
+      PGPORT: 5432
+      PGPASSWORD: titok
+      MAILUSER: techinfo@webandservice.hu
+      MAILHUB: phoenix.webandsevice.lan
+      MAILDOMAIN: webandservice.hu
+      MAILHOSTNAME: bareos-dir.webandsevice.lan
+    links:
+      - bareos-db:bareos-db
+    volumes:
+      - bareos-etc:/etc/bareos
+      - bareos-log:/var/log/bareos
+    tmpfs: 
+      - /run:rw,noexec,nosuid,size=65536k
+      - /tmp:rw,noexec,nosuid,size=1g
+    depends_on:
+      - bareos-db
+  bareos-db:
+    image: postgres:11 
+    environment:
+      POSTGRES_USER: bareos
+      POSTGRES_PASSWORD: titok
+    volumes:
+      - db-data:/var/lib/postgresql/data
+volumes:
+  bareos-etc:
+  bareos-log:
+  db-data:
