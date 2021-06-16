@@ -4,11 +4,10 @@ version: '2'
 
 services:
   bareos-dir:
-    image: ubuntu:20.04 
+    image: samma/bareos-dir:20 
     hostname: bareos-dir
     ports:
       - 9101:9101
-    command: [ "/usr/bin/sleep", "36000"]
     environment:
       DBDRIVER: postgresql 
       PGHOST: bareos-db
@@ -31,10 +30,9 @@ services:
     depends_on:
       - bareos-db
   bareos-db:
-    image: postgres:11 
-    environment:
-      POSTGRES_USER: bareos
-      POSTGRES_PASSWORD: titok
+    image: postgres:alpine 
+    env_file:
+      - .postgres_env
     volumes:
       - db-data:/var/lib/postgresql/data
 volumes:

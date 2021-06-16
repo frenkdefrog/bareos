@@ -57,7 +57,12 @@ if [ ! -f ${CONFIGDIR}/.dbready ]; then
     until  psql -c "\q"; do
         sleep 5s;
     done
-    /usr/lib/bareos/scripts/create_bareos_database && /usr/lib/bareos/scripts/make_bareos_tables && /usr/lib/bareos/scripts/grant_bareos_privileges && touch ${CONFIGDRI}/.dbready
+
+	if [ /usr/lib/bareos/scripts/create_bareos_database~="exists" ]; then
+		/usr/lib/bareos/scripts/make_bareos_tables
+		/usr/lib/bareos/scripts/grant_bareos_privileges
+		touch ${CONFIGDIR}/.dbready
+	fi
 fi
 
-#exec /usr/sbin/bareos-dir -f
+exec /usr/sbin/bareos-dir -f

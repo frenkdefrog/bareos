@@ -17,7 +17,7 @@ RUN rm -f /etc/localtime \
   && curl http://download.bareos.org/bareos/release/20/xUbuntu_20.04/Release.key | apt-key add - \
   && echo "deb http://download.bareos.org/bareos/release/20/xUbuntu_20.04/ ./" > /etc/apt/sources.list.d/bareos.list \
   && apt-get update \
-  && apt-get -y install --no-install-recommends bareos-director bareos-database-postgresql bareos-bconsole dbconfig-pgsql ssmtp \
+  && apt-get -y install --no-install-recommends bareos-director bareos-database-postgresql bareos-bconsole dbconfig-pgsql postgresql-client ssmtp \
   && rm -f /etc/bareos/.rndpwd \
   && rm -f /etc/bareos/bconsole.conf \
   && rm -rf /etc/bareos/bareos-dir.d/* \
@@ -26,4 +26,4 @@ RUN rm -f /etc/localtime \
 
 COPY bareos-dir.sh /usr/local/sbin/
 
-#  CMD ["/usr/local/sbin/bareos-dir.sh"]
+CMD ["/usr/local/sbin/bareos-dir.sh"]

@@ -1,0 +1,3 @@
+ POSTGRES_USER=bareos
+ POSTGRES_PASSWORD=titok
+ POSTGRES_INITDB_ARGS="--lc-collate 'C' --lc-ctype 'C' --encoding=SQL_ASCII"
