@@ -19,6 +19,8 @@ services:
       MAILHUB: phoenix.webandsevice.lan
       MAILDOMAIN: webandservice.hu
       MAILHOSTNAME: bareos-dir.webandsevice.lan
+      WEBADMINUSER: admin
+      WEBADMINPASS: admin
     links:
       - bareos-db:bareos-db
     volumes:
@@ -30,11 +32,22 @@ services:
     depends_on:
       - bareos-db
   bareos-db:
-    image: postgres:alpine 
+    image: postgres:12.7-alpine 
     env_file:
       - .postgres_env
     volumes:
       - db-data:/var/lib/postgresql/data
+  bareos-webui:
+    image: samma/bareos-webui:20 
+    ports:
+      - 9180:80
+    environment:
+      DIRADDRESS: bareos-dir
+      DIRPORT: 9101
+    links:
+      - bareos-dir:bareos-dir
+    depends_on:
+      - bareos-dir
 volumes:
   bareos-etc:
   bareos-log:

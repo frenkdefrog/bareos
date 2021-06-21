@@ -10,6 +10,9 @@
 : "${MAILHUB:?MAILHUB needs to be set}"
 : "${MAILDOMAIN:?MAILDOMAIN needs to be set}"
 : "${MAILHOSTNAME:?MAILHOSTNAME needs to be set}"
+: "${WEBADMINUSER:?WEBADMINUSER needs to be set}"
+: "${WEBADMINPASS:?WEBADMINPASS needs to be set}"
+: "${HOST:=""}"
 
 daemon_user=bareos
 daemon_group=bareos
@@ -53,6 +56,15 @@ hostname=$MAILHOSTNAME
 FromLineOverride=NO
 EOF
 
+cat <<EOF > /etc/bareos/bareos-dir.d/console/admin.conf
+Console {
+	Name = $WEBADMINUSER
+	Password = "$WEBADMINPASS"
+	Profile = "webui-admin"
+	TlsEnable = false
+}
+EOF
+
 if [ ! -f ${CONFIGDIR}/.dbready ]; then
     until  psql -c "\q"; do
         sleep 5s;
@@ -63,6 +75,10 @@ if [ ! -f ${CONFIGDIR}/.dbready ]; then
 		/usr/lib/bareos/scripts/grant_bareos_privileges
 		touch ${CONFIGDIR}/.dbready
 	fi
+fi
+
+if [ ! -f ${CONFIGDIR}/.hostready ]; then
+	echo ${HOST} >> /etc/hosts && touch ${CONFIGDIR}/.hostready	
 fi
 
 exec /usr/sbin/bareos-dir -f
