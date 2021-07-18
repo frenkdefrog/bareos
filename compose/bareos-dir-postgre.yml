@@ -14,13 +14,15 @@ services:
       PGDATABASE: bareos
       PGUSER: bareos
       PGPORT: 5432
-      PGPASSWORD: titok
-      MAILUSER: techinfo@webandservice.hu
-      MAILHUB: phoenix.webandsevice.lan
-      MAILDOMAIN: webandservice.hu
-      MAILHOSTNAME: bareos-dir.webandsevice.lan
+      PGPASSWORD: secretpassword
+      MAILUSER: info@service.hu
+      MAILHUB: sevice.lan
+      MAILDOMAIN: service.hu
+      MAILHOSTNAME: bareos-dir.service.lan
       WEBADMINUSER: admin
-      WEBADMINPASS: admin
+      WEBADMINPASS: secretpassword
+      SLACK_NOTIFICATION: true
+      WEBHOOK_URL: "slackwebhookurl"
     links:
       - bareos-db:bareos-db
     volumes:
