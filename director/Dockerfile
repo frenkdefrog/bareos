@@ -26,5 +26,5 @@ RUN rm -f /etc/localtime \
 
 COPY bareos-dir.sh /usr/local/sbin/
 COPY webui-admin.conf /etc/bareos/bareos-dir.d/profile/webui-admin.conf
-COPY webhook-notify.sh /usr/local/sbin/
+COPY webhook-notify.sh /usr/local/sbin/webhook-notify.sh
 CMD ["/usr/local/sbin/bareos-dir.sh"]
