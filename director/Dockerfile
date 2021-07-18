@@ -7,7 +7,6 @@ WORKDIR /tmp
 
 COPY bareos-database-common.conf /etc/dbconfig-common/bareos-database-common.conf
 COPY config /etc/dbconfig-common/config
-COPY webui-admin.conf /etc/bareos/bareos-dir.d/profile/webui-admin.conf
 
 RUN rm -f /etc/localtime \
   && ln -s /usr/share/zoneinfo/Europe/Budapest /etc/localtime \
@@ -26,5 +25,6 @@ RUN rm -f /etc/localtime \
   && apt-get --purge -y autoremove
 
 COPY bareos-dir.sh /usr/local/sbin/
-
+COPY webui-admin.conf /etc/bareos/bareos-dir.d/profile/webui-admin.conf
+COPY webhook-notify.sh /usr/local/sbin/
 CMD ["/usr/local/sbin/bareos-dir.sh"]

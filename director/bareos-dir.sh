@@ -12,6 +12,7 @@
 : "${MAILHOSTNAME:?MAILHOSTNAME needs to be set}"
 : "${WEBADMINUSER:?WEBADMINUSER needs to be set}"
 : "${WEBADMINPASS:?WEBADMINPASS needs to be set}"
+: "${SLACK_NOTIFICATION:=false}"
 : "${HOST:=""}"
 
 daemon_user=bareos
@@ -80,5 +81,37 @@ fi
 if [ ! -f ${CONFIGDIR}/.hostready ]; then
 	echo ${HOST} >> /etc/hosts && touch ${CONFIGDIR}/.hostready	
 fi
+
+if [ ${SLACK_NOTIFICATION} == true ]; then
+        notification_command="/usr/local/bin/webhook-notify.sh %t %e %c %l %n"
+else
+        notification_command="/usr/bin/bsmtp -h localhost -f \\\"\(Bareos\) \<%r\>\\\" -s \\\"Bareos daemon message\\\" %r"
+fi
+
+cat <<EOF > /etc/bareos/bareos-dir.d/messages/Daemon.conf
+Messages {
+  Name = Daemon
+  Description = "Message delivery for daemon messages (no job)."
+  mailcommand = "${notification_command}"
+  mail = root = all, !skipped, !audit # (#02)
+  console = all, !skipped, !saved, !audit
+  append = "/var/log/bareos/bareos.log" = all, !skipped, !audit
+  append = "/var/log/bareos/bareos-audit.log" = audit
+}
+EOF
+
+cat <<EOF > /etc/bareos/bareos-dir.d/messages/Standard.conf
+Messages {
+  Name = Standard
+  Description = "Reasonable message delivery -- send most everything to email address and to the console."
+  operatorcommand = "/usr/bin/bsmtp -h localhost -f \"\(Bareos\) \<%r\>\" -s \"Bareos: Intervention needed for %j\" %r"
+  mailcommand = "${notification_command}"
+  operator = root = mount                                 # (#03)
+  mail = root = all, !skipped, !saved, !audit             # (#02)
+  console = all, !skipped, !saved, !audit
+  append = "/var/log/bareos/bareos.log" = all, !skipped, !saved, !audit
+  catalog = all, !skipped, !saved, !audit
+}
+EOF
 
 exec /usr/sbin/bareos-dir -f
