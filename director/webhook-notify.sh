@@ -7,6 +7,7 @@ job_status=$2
 job_client=$3
 job_level=$4
 job_name=$5
+job_id=$6
 color="#ff0015"
 
 if [ "$job_status" = "OK" ] ;then
@@ -22,9 +23,11 @@ load_json()
 {
     "attachments": [
         {
-            "fallback": "Required plain-text summary of the attachment.",
+            "fallback": "Biztonsági mentés eredménye - ${job_client}.",
             "color": "${color}",
 	    "pretext": "A mentés lefutott a következő eredménnyel ($(date)):", 
+	    "title": "BareOS JobID: ${job_id}",
+            "title_link":"http://voldemort.webandservice.lan:9180/bareos-webui/job/details/${job_id}",
 	    "fields": [
                 {
                     "title": "Kliens:",

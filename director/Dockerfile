@@ -21,7 +21,6 @@ RUN rm -f /etc/localtime \
   && rm -f /etc/bareos/.rndpwd \
   && rm -f /etc/bareos/bconsole.conf \
   && rm -rf /etc/bareos/bareos-dir.d/* \
-  && apt-get -y purge curl \
   && apt-get --purge -y autoremove
 
 COPY bareos-dir.sh /usr/local/sbin/
