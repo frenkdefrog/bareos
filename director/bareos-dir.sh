@@ -83,7 +83,7 @@ if [ ! -f ${CONFIGDIR}/.hostready ]; then
 fi
 
 if [ ${SLACK_NOTIFICATION} == true ]; then
-        notification_command="/usr/local/sbin/webhook-notify.sh %t %e %c %l %n"
+        notification_command="/usr/local/sbin/webhook-notify.sh %t %e %c %l %n %i"
 else
         notification_command="/usr/bin/bsmtp -h localhost -f \\\"\(Bareos\) \<%r\>\\\" -s \\\"Bareos daemon message\\\" %r"
 fi
